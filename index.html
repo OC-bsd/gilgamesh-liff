@@ -157,7 +157,12 @@ liff.init({ liffId: LIFF_ID }).then(function() {
   document.getElementById('status').textContent = 'ログイン確認中...';
   if (!liff.isLoggedIn()) {
     document.getElementById('status').textContent = 'LINEログインへ移動中...';
-    liff.login();
+    // ★ redirectUri にQR番号を含めてログイン後もパラメータを保持
+    var redirectBack = window.location.href;
+    if (QR_NUM && QR_NUM !== '0' && redirectBack.indexOf('qr=') === -1) {
+      redirectBack += (redirectBack.indexOf('?') >= 0 ? '&' : '?') + 'qr=' + QR_NUM;
+    }
+    liff.login({ redirectUri: redirectBack });
     return;
   }
   document.getElementById('status').textContent = 'プロフィール取得中...';
